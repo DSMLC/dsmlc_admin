@@ -1,12 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { useEffect, useState } from "react";
 import { Download, Printer } from "lucide-react";
 
 import { FormDialogShell } from "@/components/features/dashboard/forms/form-dialog-shell";
 import { Button, TriggerLabel } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+import {
+  LABEL_WIDTH_MM,
+  LABEL_HEIGHT_MM,
+  generateMemberLabel,
+  buildPrintDocument,
+  slugify,
+  truncateForDisplay,
+} from "@/config/label";
 
 interface MemberQrDialogProps {
   qrToken: string;
@@ -20,51 +26,54 @@ export function MemberQrDialog({
   membershipType,
 }: MemberQrDialogProps) {
   const [open, setOpen] = useState(false);
-  const [dataUrl, setDataUrl] = useState<string | null>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const [labelDataUrl, setLabelDataUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
-    QRCode.toDataURL(qrToken, {
-      width: 320,
-      margin: 1,
-      color: { dark: "#0a0a0a", light: "#ffffff" },
-    }).then(setDataUrl);
-  }, [open, qrToken]);
+
+    let cancelled = false;
+    setError(null);
+    setLabelDataUrl(null);
+
+    generateMemberLabel(qrToken, memberName, membershipType)
+      .then((composited) => {
+        if (!cancelled) setLabelDataUrl(composited);
+      })
+      .catch(() => {
+        if (!cancelled) setError("Couldn't generate the label. Try again.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, qrToken, memberName, membershipType]);
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next);
+    if (!next) {
+      setLabelDataUrl(null);
+      setError(null);
+    }
+  }
 
   function handleDownload() {
-    if (!dataUrl) return;
+    if (!labelDataUrl) return;
     const link = document.createElement("a");
-    link.href = dataUrl;
-    link.download = `${memberName.toLowerCase().replace(/\s+/g, "-")}-qr.png`;
+    link.href = labelDataUrl;
+    link.download = `${slugify(memberName)}-label-40x14mm.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
   function handlePrint() {
-    if (!cardRef.current) return;
-    const printWindow = window.open("", "_blank", "width=420,height=640");
+    if (!labelDataUrl) return;
+
+    const printWindow = window.open("", "_blank", "width=420,height=300");
     if (!printWindow) return;
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>${memberName} — Club Card</title>
-          <style>
-            @page { size: 3.5in 2.2in; margin: 0; }
-            body {
-              margin: 0;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-family: system-ui, sans-serif;
-            }
-          </style>
-        </head>
-        <body>${cardRef.current.outerHTML}</body>
-      </html>
-    `);
+    printWindow.document.write(buildPrintDocument(labelDataUrl));
     printWindow.document.close();
     printWindow.focus();
     printWindow.onload = () => {
@@ -73,50 +82,72 @@ export function MemberQrDialog({
     };
   }
 
+  const previewScale = 7;
+  const previewWidth = LABEL_WIDTH_MM * previewScale;
+  const previewHeight = LABEL_HEIGHT_MM * previewScale;
+
   return (
     <FormDialogShell
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={handleOpenChange}
       trigger={
         <TriggerLabel variant="secondary" className="px-4 py-1.5 text-xs">
           QR
         </TriggerLabel>
       }
-      title={`${memberName}'s club card`}
+      title={`${truncateForDisplay(memberName, 24)}'s club label`}
     >
       <div className="flex flex-col items-center gap-5">
         <div
-          ref={cardRef}
-          className="flex w-full max-w-[340px] items-center gap-4 rounded-2xl border border-[#1e1e1e] bg-white p-4"
+          role="img"
+          aria-label={`Label preview for ${memberName}, printed at ${LABEL_WIDTH_MM} by ${LABEL_HEIGHT_MM} millimeters`}
+          className="flex items-center justify-center rounded-lg border border-[#1e1e1e] bg-[#0d0d0d] p-6"
         >
-          {dataUrl ? (
-            <img src={dataUrl} alt="Member QR code" width={110} height={110} />
-          ) : (
-            <div className="flex h-[110px] w-[110px] items-center justify-center text-xs text-black/40">
-              Generating…
+          {error ? (
+            <div
+              style={{ width: previewWidth, height: previewHeight }}
+              className="flex items-center justify-center rounded-sm bg-white px-2 text-center text-[10px] text-red-500"
+            >
+              {error}
             </div>
+          ) : labelDataUrl ? (
+            <img
+              src={labelDataUrl}
+              alt={`QR code and label for ${memberName}`}
+              width={previewWidth}
+              height={previewHeight}
+              className="rounded-sm shadow-sm"
+              style={{ imageRendering: "pixelated" }}
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              style={{ width: previewWidth, height: previewHeight }}
+              className="animate-pulse rounded-sm bg-white/10"
+            />
           )}
-          <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-wide text-black/40">
-              {siteConfig.name}
-            </p>
-            <p className="mt-1 truncate text-base font-bold text-black">
-              {memberName}
-            </p>
-            <p className="text-xs font-light text-black/50">{membershipType}</p>
-          </div>
         </div>
 
+        <p className="text-center text-xs font-light text-white/40">
+          Actual print size: {LABEL_WIDTH_MM} × {LABEL_HEIGHT_MM}mm — shown at{" "}
+          {previewScale}× for preview only
+        </p>
+
         <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={handlePrint}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handlePrint}
+            disabled={!labelDataUrl}
+          >
             <Printer className="h-4 w-4" strokeWidth={1.75} />
-            Print card
+            Print label
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={handleDownload}
-            disabled={!dataUrl}
+            disabled={!labelDataUrl}
           >
             <Download className="h-4 w-4" strokeWidth={1.75} />
             Download PNG
