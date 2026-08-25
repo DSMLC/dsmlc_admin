@@ -4,6 +4,8 @@ An internal analytics and management dashboard for the DSMLC (UCalgary) club. Bu
 
 ---
 
+push
+
 ## Table of Contents
 
 - [Overview](#overview)
