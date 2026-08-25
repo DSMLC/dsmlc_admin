@@ -61,7 +61,7 @@ export function MemberQrDialog({
     if (!labelDataUrl) return;
     const link = document.createElement("a");
     link.href = labelDataUrl;
-    link.download = `${slugify(memberName)}-label-40x14mm.png`;
+    link.download = `${slugify(memberName)}_code.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -129,8 +129,7 @@ export function MemberQrDialog({
         </div>
 
         <p className="text-center text-xs font-light text-white/40">
-          Actual print size: {LABEL_WIDTH_MM} × {LABEL_HEIGHT_MM}mm — shown at{" "}
-          {previewScale}× for preview only
+          Actual print size: {LABEL_WIDTH_MM} × {LABEL_HEIGHT_MM}mm
         </p>
 
         <div className="flex gap-2">
@@ -145,7 +144,7 @@ export function MemberQrDialog({
           </Button>
           <Button
             type="button"
-            variant="outline"
+            variant="primary"
             onClick={handleDownload}
             disabled={!labelDataUrl}
           >

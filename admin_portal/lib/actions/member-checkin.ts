@@ -55,6 +55,8 @@ export async function checkInByToken(eventId: string, token: string): Promise<Ch
       event_id: eventId,
       people_id: peopleId,
       status: "at-door",
+      course_name: null,
+      coming_from: "Member",
       registered_at: new Date().toISOString(),
     })
 

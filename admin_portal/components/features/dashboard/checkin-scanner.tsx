@@ -46,8 +46,7 @@ export function CheckInScanner({ eventId }: CheckInScannerProps) {
     });
 
     return () => {
-      // Wait for start() to settle (success or failure) before ever
-      // touching the scanner — this is what prevents the race.
+      // Wait for start() to settle (success or failure)
       startPromise
         .catch(() => null)
         .then(() => {
@@ -83,12 +82,12 @@ export function CheckInScanner({ eventId }: CheckInScannerProps) {
       <div className="mt-4 min-h-[52px]">
         {result?.status === "checked_in" && (
           <p className="text-sm font-medium text-green-400">
-            ✓ Checked in {result.name}
+            Successfully Checked In: {result.name}
           </p>
         )}
         {result?.status === "already_checked_in" && (
           <p className="text-sm font-medium text-yellow-400">
-            {result.name} is already checked in.
+            {result.name} is already checked in for this event.
           </p>
         )}
         {result?.status === "not_found" && (

@@ -53,13 +53,13 @@ export async function DashboardShell({ children }: DashboardShellProps) {
       <div className="sticky top-0 z-20 border-b border-[#1e1e1e] bg-[#0a0a0a] md:hidden">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="accent-gradient logo-glow flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
               <Image
                 src="/dsmlc_square_dark_transparent.png"
                 alt="Club logo"
-                width={24}
-                height={24}
-                className="h-6 w-6 object-contain"
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
               />
             </div>
             <p className="text-sm font-semibold text-[#f2f2f2]">
