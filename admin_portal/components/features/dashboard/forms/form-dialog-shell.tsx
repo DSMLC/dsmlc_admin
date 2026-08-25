@@ -4,10 +4,13 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import type React from "react";
 
+import { cn } from "@/lib/utils";
+
 interface FormDialogShellProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   trigger: React.ReactNode;
+  triggerClassName?: string;
   title: string;
   children: React.ReactNode;
 }
@@ -16,6 +19,7 @@ export function FormDialogShell({
   open,
   onOpenChange,
   trigger,
+  triggerClassName,
   title,
   children,
 }: FormDialogShellProps) {
@@ -32,7 +36,11 @@ export function FormDialogShell({
 
   return (
     <>
-      <button type="button" onClick={() => onOpenChange(true)}>
+      <button
+        type="button"
+        onClick={() => onOpenChange(true)}
+        className={cn("block", triggerClassName)}
+      >
         {trigger}
       </button>
 

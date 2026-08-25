@@ -26,22 +26,25 @@ export function RegistrationsTable({
     {
       id: "name",
       header: "Name",
+      width: "18%",
       render: (r) => `${r.first_name} ${r.last_name}`,
     },
     {
       id: "email",
       header: "Email",
+      width: "24%",
       render: (r) => r.email,
       className: "px-6 py-4 text-[#8a8a8a]",
     },
     {
       id: "status",
       header: "Status",
+      width: "16%",
       render: (r) => {
         const color = statusColor(r.status);
         return (
           <span
-            className="rounded-full border px-2.5 py-1 text-xs capitalize"
+            className="inline-block shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-xs capitalize"
             style={{ borderColor: `${color}66`, color }}
           >
             {r.status.replace("-", " ")}
@@ -53,25 +56,31 @@ export function RegistrationsTable({
     {
       id: "course_credit",
       header: "Course credit",
+      width: "16%",
       render: (r) => r.course_name ?? "—",
       className: "px-6 py-4 text-[#8a8a8a]",
     },
     {
       id: "source",
       header: "Source",
+      width: "14%",
       render: (r) => r.coming_from ?? "—",
       className: "px-6 py-4 text-[#8a8a8a]",
     },
     {
       id: "actions",
       header: "",
+      width: "12%",
       render: (r) => (
         <RegistrationFormDialog
           mode="edit"
           eventId={eventId}
           registration={r}
           trigger={
-            <TriggerLabel variant="secondary" className="px-4 py-1.5 text-xs">
+            <TriggerLabel
+              variant="secondary"
+              className="shrink-0 whitespace-nowrap px-4 py-1.5 text-xs"
+            >
               Edit
             </TriggerLabel>
           }

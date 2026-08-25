@@ -67,7 +67,15 @@ export function CheckInScanner({ eventId }: CheckInScannerProps) {
         setOpen(next);
         if (!next) setResult(null);
       }}
-      trigger={<TriggerLabel variant="outline">Scan check-in</TriggerLabel>}
+      trigger={
+        <TriggerLabel
+          variant="outline"
+          className="w-full justify-center sm:w-auto"
+        >
+          Scan check-in
+        </TriggerLabel>
+      }
+      triggerClassName="w-full sm:w-auto"
       title="Scan member QR code"
     >
       <div id="checkin-reader" className="overflow-hidden rounded-[10px]" />

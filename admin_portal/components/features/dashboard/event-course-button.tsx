@@ -63,12 +63,12 @@ export function EventCourseExportButton({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full items-center gap-2 sm:w-auto">
       <select
         value={selectedCourse}
         onChange={(e) => setSelectedCourse(e.target.value)}
         disabled={courses.length === 0}
-        className="min-h-[44px] rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-light text-white outline-none focus:border-white/40 disabled:cursor-not-allowed disabled:opacity-60"
+        className="min-h-[44px] min-w-0 flex-1 truncate rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-light text-white outline-none focus:border-white/40 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none sm:w-auto"
       >
         <option value={ALL_COURSES} className="bg-white text-black">
           {ALL_COURSES}
@@ -84,6 +84,7 @@ export function EventCourseExportButton({
         variant="outline"
         onClick={handleDownload}
         disabled={filteredRows.length === 0}
+        className="shrink-0 whitespace-nowrap"
       >
         <Download className="h-4 w-4" strokeWidth={1.75} />
         Export ({filteredRows.length})

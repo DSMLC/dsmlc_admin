@@ -28,7 +28,7 @@ const columns: DataTableColumn<EventRow>[] = [
   {
     id: "event",
     header: "Event",
-    width: "26%",
+    width: "24%",
     render: (event) => (
       <Link
         href={`/dashboard/events/${event.event_id}`}
@@ -41,12 +41,12 @@ const columns: DataTableColumn<EventRow>[] = [
   {
     id: "category",
     header: "Category",
-    width: "14%",
+    width: "18%",
     render: (event) => {
       const color = categoryColor(event.event_type);
       return (
         <span
-          className="rounded-full border px-2.5 py-1 text-xs"
+          className="inline-block shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-xs"
           style={{ borderColor: `${color}66`, color }}
         >
           {event.event_type}
@@ -57,14 +57,14 @@ const columns: DataTableColumn<EventRow>[] = [
   {
     id: "date",
     header: "Date",
-    width: "12%",
+    width: "11%",
     render: (event) => formatDate(event.event_date),
     className: "px-6 py-4 text-[#8a8a8a]",
   },
   {
     id: "rsvp_atdoor_att",
     header: "RSVP / At-door / ATT.",
-    width: "20%",
+    width: "19%",
     render: (event) =>
       `${event.rsvp} / ${event.atDoor ?? 0} / ${event.attended}`,
     className: "px-6 py-4 text-[#8a8a8a]",
@@ -102,6 +102,7 @@ export function EventsTable({ events }: EventsTableProps) {
       filters={[
         {
           id: "category",
+          label: "Category",
           getValue: (event) => event.event_type,
         },
       ]}

@@ -18,6 +18,7 @@ interface RegistrationFormDialogProps {
   eventId: string;
   registration?: RegistrationRow;
   trigger: React.ReactNode;
+  triggerClassName?: string;
 }
 
 const initialState: ActionState = {};

@@ -166,7 +166,7 @@ export default async function EventDetailPage({
       <div className="mt-6">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-light text-[#9a9a9a]">Registrations</h2>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
             <CheckInScanner eventId={event.event_id} />
             <EventCourseExportButton
               eventName={event.event_name}
@@ -175,8 +175,12 @@ export default async function EventDetailPage({
             <RegistrationFormDialog
               mode="create"
               eventId={event.event_id}
+              triggerClassName="w-full sm:w-auto"
               trigger={
-                <TriggerLabel variant="primary">
+                <TriggerLabel
+                  variant="primary"
+                  className="w-full justify-center sm:w-auto"
+                >
                   + Add registration
                 </TriggerLabel>
               }
