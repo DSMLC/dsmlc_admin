@@ -12,6 +12,7 @@ export interface MemberRow {
   mailing: boolean
   expires_at: string | null
   created_at: string
+  qr_token: string
 }
 
 export async function getMembers(): Promise<MemberRow[]> {
@@ -20,7 +21,7 @@ export async function getMembers(): Promise<MemberRow[]> {
   const { data, error } = await supabase
     .from("MEMBERSHIP")
     .select(
-      "membership_id, membership_type, mailing, expires_at, created_at, people_id, PEOPLE(people_id, first_name, last_name, email, student_id, major)"
+      "membership_id, membership_type, mailing, expires_at, created_at, qr_token, people_id, PEOPLE(people_id, first_name, last_name, email, student_id, major)"
     )
     .order("created_at", { ascending: false })
 
@@ -42,6 +43,7 @@ export async function getMembers(): Promise<MemberRow[]> {
         mailing: row.mailing,
         expires_at: row.expires_at,
         created_at: row.created_at,
+        qr_token: row.qr_token,
       } satisfies MemberRow
     })
     .filter((m): m is MemberRow => m !== null)

@@ -5,6 +5,7 @@ import {
   type DataTableColumn,
 } from "@/components/ui/dashboard/data-table";
 import { MemberFormDialog } from "@/components/features/dashboard/forms/member-form-dialog";
+import { MemberQrDialog } from "@/components/features/dashboard/forms/member-qr-dialog";
 import { TriggerLabel } from "@/components/ui/button";
 import type { MemberRow } from "@/lib/queries/members";
 
@@ -55,17 +56,24 @@ const columns: DataTableColumn<MemberRow>[] = [
   {
     id: "actions",
     header: "",
-    width: "12%",
+    width: "16%",
     render: (member) => (
-      <MemberFormDialog
-        mode="edit"
-        member={member}
-        trigger={
-          <TriggerLabel variant="secondary" className="px-4 py-1.5 text-xs">
-            Edit
-          </TriggerLabel>
-        }
-      />
+      <div className="flex justify-end gap-2">
+        <MemberQrDialog
+          qrToken={member.qr_token}
+          memberName={`${member.first_name} ${member.last_name}`}
+          membershipType={member.membership_type}
+        />
+        <MemberFormDialog
+          mode="edit"
+          member={member}
+          trigger={
+            <TriggerLabel variant="secondary" className="px-4 py-1.5 text-xs">
+              Edit
+            </TriggerLabel>
+          }
+        />
+      </div>
     ),
     className: "px-6 py-4 text-right",
   },

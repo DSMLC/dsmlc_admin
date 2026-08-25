@@ -52,4 +52,5 @@ export interface Membership {
   created_at: string
   expires_at: string | null
   mailing: boolean
+  qr_token: string 
 }

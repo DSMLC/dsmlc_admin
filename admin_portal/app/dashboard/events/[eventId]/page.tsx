@@ -20,6 +20,7 @@ import { RegistrationFormDialog } from "@/components/features/dashboard/forms/re
 import { EventCourseExportButton } from "@/components/features/dashboard/event-course-button";
 import { CopyableId } from "@/components/ui/dashboard/event-id";
 import { RegistrationsTable } from "@/components/features/dashboard/tables/registrations-table";
+import { CheckInScanner } from "@/components/features/dashboard/checkin-scanner";
 import { TriggerLabel } from "@/components/ui/button";
 
 interface PageProps {
@@ -166,6 +167,7 @@ export default async function EventDetailPage({
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-light text-[#9a9a9a]">Registrations</h2>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <CheckInScanner eventId={event.event_id} />
             <EventCourseExportButton
               eventName={event.event_name}
               rows={courseCreditRows}
